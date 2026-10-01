@@ -33,7 +33,7 @@ def fields(args) -> int:
     relation = {
         "source_expression": args.source,
         "sink_expression": args.sink,
-        "statement": args.statement or f"{args.sink} = {args.source};",
+        "flow_excerpt": args.statement or f"{args.sink} = {args.source};",
     }
     result = advisor.review_fields(
         source_expression=args.source,
