@@ -47,9 +47,12 @@ def _fields(args) -> int:
 
 
 def _accept() -> int:
-    from live.evaluate import main as evaluate_main
-    result = evaluate_main()
-    return int(result or 0)
+    from live.evaluate import run
+    metrics, _rows = run()
+    summary = {k: v for k, v in metrics.items() if k != "acceptance"}
+    print(json.dumps(summary, indent=2))
+    print("ACCEPTED:", metrics["ACCEPTED"])
+    return 0 if metrics["ACCEPTED"] else 1
 
 
 def _scan(args) -> int:
