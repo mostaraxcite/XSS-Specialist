@@ -45,7 +45,7 @@ def classify_context(html_src: str, marker: str) -> str:
     return "html_text"
 
 
-def assess_candidate(candidate: dict, enforcer, fid: str, timeout_ms: int = 4000,
+def assess_candidate(candidate: dict, enforcer, fid: str, timeout_ms: int = 12000,
                      caps: dict | None = None) -> dict:
     """Full per-candidate flow. Returns {finding, marker_ev, exec_evs}.
     caps (all default True) toggle v2 capabilities for ablation/baseline emulation:
