@@ -1,4 +1,4 @@
-name: Publish XSS Specialist v1.0.0
+name: Publish XSS Specialist v1.0.1
 
 on:
   push:
@@ -21,8 +21,8 @@ jobs:
         run: |
           set -euxo pipefail
           mkdir -p dist
-          git archive --format=zip --output=dist/xss-specialist-v1.0.0.zip HEAD             README.md LICENSE pyproject.toml uv.lock release.json             runtime xss_specialist live verification models
-          sha256sum dist/xss-specialist-v1.0.0.zip > dist/xss-specialist-v1.0.0.zip.sha256
+          git archive --format=zip --output=dist/xss-specialist-v1.0.1.zip HEAD             README.md LICENSE pyproject.toml uv.lock release.json             runtime xss_specialist live verification models
+          sha256sum dist/xss-specialist-v1.0.1.zip > dist/xss-specialist-v1.0.1.zip.sha256
           ls -lh dist/
 
       - name: Publish GitHub Release
@@ -31,8 +31,8 @@ jobs:
         shell: bash
         run: |
           NOTES="Standalone frozen XSS Specialist runtime. Includes semantic v4e winner, Flow v2, deterministic authority, Browser Oracle and bounded live runtime. External v7: 90% system / 90% model advice. Pre-Live: precision 94.12%, recall 100%, browser confirmation 93.75%."
-          if gh release view v1.0.0 >/dev/null 2>&1; then
-            gh release upload v1.0.0               dist/xss-specialist-v1.0.0.zip               dist/xss-specialist-v1.0.0.zip.sha256               --clobber
+          if gh release view v1.0.1 >/dev/null 2>&1; then
+            gh release upload v1.0.1               dist/xss-specialist-v1.0.1.zip               dist/xss-specialist-v1.0.1.zip.sha256               --clobber
           else
-            gh release create v1.0.0               dist/xss-specialist-v1.0.0.zip               dist/xss-specialist-v1.0.0.zip.sha256               --title "XSS Specialist v1.0.0"               --notes "$NOTES"
+            gh release create v1.0.1               dist/xss-specialist-v1.0.1.zip               dist/xss-specialist-v1.0.1.zip.sha256               --title "XSS Specialist v1.0.1"               --notes "$NOTES"
           fi
