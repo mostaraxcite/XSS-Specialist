@@ -1,0 +1,45 @@
+{
+  "schema": "xss-dual-branch-v2",
+  "semantic_backbone": "semantic_backbone",
+  "flow_backbone": "flow_backbone",
+  "semantic_tasks": [
+    "source",
+    "sink",
+    "defense"
+  ],
+  "flow_task": "flow",
+  "label_spaces": {
+    "source": [
+      "NONE",
+      "BROWSER",
+      "SERVER",
+      "FRAMEWORK",
+      "OTHER"
+    ],
+    "sink": [
+      "NONE",
+      "DANGEROUS_HTML",
+      "DANGEROUS_JS",
+      "DANGEROUS_URL",
+      "SAFE_OUTPUT",
+      "OTHER"
+    ],
+    "defense": [
+      "NONE",
+      "SANITIZATION",
+      "CONTEXTUAL_ENCODING",
+      "FRAMEWORK_ESCAPING",
+      "SAFE_DOM_API",
+      "INPUT_CONSTRAINT",
+      "OTHER"
+    ],
+    "flow": [
+      "CONNECTED",
+      "DISCONNECTED",
+      "UNKNOWN"
+    ]
+  },
+  "branches_share_trainable_parameters": false,
+  "final_judge": false,
+  "confirmation_authority": "deterministic_or_browser_execution_only"
+}

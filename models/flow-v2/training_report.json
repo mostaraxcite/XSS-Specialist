@@ -1,0 +1,275 @@
+{
+  "schema": "xss-flow-branch-training-v2",
+  "architecture": "standalone-v04-flow-branch",
+  "backbone_source": "prepared/security-models/xss/v04-flow-v2-backbone",
+  "labels": [
+    "CONNECTED",
+    "DISCONNECTED",
+    "UNKNOWN"
+  ],
+  "train_rows": 492,
+  "dev_rows": 270,
+  "epochs": 8,
+  "batch_size": 32,
+  "max_length": 128,
+  "learning_rate": 3e-05,
+  "freeze_layers": 0,
+  "class_balance_power": 0.0,
+  "class_weights": {
+    "CONNECTED": {
+      "count": 164,
+      "weight": 1.0
+    },
+    "DISCONNECTED": {
+      "count": 164,
+      "weight": 1.0
+    },
+    "UNKNOWN": {
+      "count": 164,
+      "weight": 1.0
+    }
+  },
+  "seed": 6061,
+  "best_macro_f1": 0.9290376623459894,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 1.148805409669876,
+      "dev": {
+        "loss": 1.0295338392257691,
+        "macro_f1": 0.3970256069171932,
+        "accuracy": 0.43333333333333335,
+        "per_class": {
+          "CONNECTED": {
+            "precision": 0.8235294117647058,
+            "recall": 0.3111111111111111,
+            "f1": 0.45161290322580644,
+            "support": 90
+          },
+          "DISCONNECTED": {
+            "precision": 0.4,
+            "recall": 0.15555555555555556,
+            "f1": 0.224,
+            "support": 90
+          },
+          "UNKNOWN": {
+            "precision": 0.373134328358209,
+            "recall": 0.8333333333333334,
+            "f1": 0.5154639175257731,
+            "support": 90
+          }
+        }
+      }
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.9526136107742786,
+      "dev": {
+        "loss": 0.781456983089447,
+        "macro_f1": 0.6531385281385281,
+        "accuracy": 0.662962962962963,
+        "per_class": {
+          "CONNECTED": {
+            "precision": 0.7558139534883721,
+            "recall": 0.7222222222222222,
+            "f1": 0.7386363636363636,
+            "support": 90
+          },
+          "DISCONNECTED": {
+            "precision": 0.609375,
+            "recall": 0.43333333333333335,
+            "f1": 0.5064935064935064,
+            "support": 90
+          },
+          "UNKNOWN": {
+            "precision": 0.625,
+            "recall": 0.8333333333333334,
+            "f1": 0.7142857142857143,
+            "support": 90
+          }
+        }
+      }
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.7586038522422314,
+      "dev": {
+        "loss": 0.5833514571189881,
+        "macro_f1": 0.7012628037287106,
+        "accuracy": 0.737037037037037,
+        "per_class": {
+          "CONNECTED": {
+            "precision": 0.7589285714285714,
+            "recall": 0.9444444444444444,
+            "f1": 0.8415841584158416,
+            "support": 90
+          },
+          "DISCONNECTED": {
+            "precision": 0.8055555555555556,
+            "recall": 0.32222222222222224,
+            "f1": 0.4603174603174603,
+            "support": 90
+          },
+          "UNKNOWN": {
+            "precision": 0.6967213114754098,
+            "recall": 0.9444444444444444,
+            "f1": 0.8018867924528302,
+            "support": 90
+          }
+        }
+      }
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.5360196717083454,
+      "dev": {
+        "loss": 0.4478350043296814,
+        "macro_f1": 0.8317320456657374,
+        "accuracy": 0.837037037037037,
+        "per_class": {
+          "CONNECTED": {
+            "precision": 0.8431372549019608,
+            "recall": 0.9555555555555556,
+            "f1": 0.8958333333333334,
+            "support": 90
+          },
+          "DISCONNECTED": {
+            "precision": 0.8194444444444444,
+            "recall": 0.6555555555555556,
+            "f1": 0.7283950617283951,
+            "support": 90
+          },
+          "UNKNOWN": {
+            "precision": 0.84375,
+            "recall": 0.9,
+            "f1": 0.8709677419354839,
+            "support": 90
+          }
+        }
+      }
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.383402525447309,
+      "dev": {
+        "loss": 0.3332727372646332,
+        "macro_f1": 0.8634940850854406,
+        "accuracy": 0.8703703703703703,
+        "per_class": {
+          "CONNECTED": {
+            "precision": 0.8737864077669902,
+            "recall": 1.0,
+            "f1": 0.9326424870466321,
+            "support": 90
+          },
+          "DISCONNECTED": {
+            "precision": 0.9365079365079365,
+            "recall": 0.6555555555555556,
+            "f1": 0.7712418300653595,
+            "support": 90
+          },
+          "UNKNOWN": {
+            "precision": 0.8269230769230769,
+            "recall": 0.9555555555555556,
+            "f1": 0.8865979381443299,
+            "support": 90
+          }
+        }
+      }
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.2861916683614254,
+      "dev": {
+        "loss": 0.25141233056783674,
+        "macro_f1": 0.9133747805868784,
+        "accuracy": 0.9148148148148149,
+        "per_class": {
+          "CONNECTED": {
+            "precision": 0.9468085106382979,
+            "recall": 0.9888888888888889,
+            "f1": 0.967391304347826,
+            "support": 90
+          },
+          "DISCONNECTED": {
+            "precision": 0.9473684210526315,
+            "recall": 0.8,
+            "f1": 0.8674698795180723,
+            "support": 90
+          },
+          "UNKNOWN": {
+            "precision": 0.86,
+            "recall": 0.9555555555555556,
+            "f1": 0.9052631578947369,
+            "support": 90
+          }
+        }
+      }
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.2087013190612197,
+      "dev": {
+        "loss": 0.2151508003473282,
+        "macro_f1": 0.9290376623459894,
+        "accuracy": 0.9296296296296296,
+        "per_class": {
+          "CONNECTED": {
+            "precision": 0.9565217391304348,
+            "recall": 0.9777777777777777,
+            "f1": 0.967032967032967,
+            "support": 90
+          },
+          "DISCONNECTED": {
+            "precision": 0.9390243902439024,
+            "recall": 0.8555555555555555,
+            "f1": 0.8953488372093024,
+            "support": 90
+          },
+          "UNKNOWN": {
+            "precision": 0.8958333333333334,
+            "recall": 0.9555555555555556,
+            "f1": 0.9247311827956989,
+            "support": 90
+          }
+        }
+      }
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.19137484161183238,
+      "dev": {
+        "loss": 0.21278087943792343,
+        "macro_f1": 0.9252359840595136,
+        "accuracy": 0.9259259259259259,
+        "per_class": {
+          "CONNECTED": {
+            "precision": 0.9565217391304348,
+            "recall": 0.9777777777777777,
+            "f1": 0.967032967032967,
+            "support": 90
+          },
+          "DISCONNECTED": {
+            "precision": 0.9382716049382716,
+            "recall": 0.8444444444444444,
+            "f1": 0.8888888888888888,
+            "support": 90
+          },
+          "UNKNOWN": {
+            "precision": 0.8865979381443299,
+            "recall": 0.9555555555555556,
+            "f1": 0.9197860962566845,
+            "support": 90
+          }
+        }
+      }
+    }
+  ],
+  "runtime_seconds": 104.01,
+  "device": "cpu",
+  "whole_snippet_classifier_loss": false,
+  "locked_external_used": false,
+  "final_judge": false,
+  "promotion_allowed": false,
+  "note": "Flow relation advisor only; static/browser authority is unchanged."
+}

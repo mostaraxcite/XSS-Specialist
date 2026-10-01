@@ -1,0 +1,48 @@
+{
+  "slug": "lr25e5-e12",
+  "passed": true,
+  "source": {
+    "macro_f1": 1.0,
+    "accuracy": 1.0,
+    "per_class_f1": {
+      "NONE": 1.0,
+      "BROWSER": 1.0,
+      "SERVER": 1.0,
+      "FRAMEWORK": 1.0,
+      "OTHER": 1.0
+    }
+  },
+  "sink": {
+    "macro_f1": 0.9861111111111112,
+    "accuracy": 0.9880952380952381,
+    "per_class_f1": {
+      "NONE": 0.9583333333333334,
+      "DANGEROUS_HTML": 1.0,
+      "DANGEROUS_JS": 1.0,
+      "DANGEROUS_URL": 1.0,
+      "SAFE_OUTPUT": 1.0,
+      "OTHER": 0.9583333333333334
+    }
+  },
+  "defense": {
+    "macro_f1": 0.9156462585034014,
+    "accuracy": 0.9074074074074074,
+    "per_class_f1": {
+      "NONE": 1.0,
+      "SANITIZATION": 1.0,
+      "CONTEXTUAL_ENCODING": 0.9333333333333333,
+      "FRAMEWORK_ESCAPING": 0.8571428571428571,
+      "SAFE_DOM_API": 1.0,
+      "INPUT_CONSTRAINT": 0.8571428571428571,
+      "OTHER": 0.7619047619047619
+    }
+  },
+  "mins": {
+    "source": 1.0,
+    "sink": 0.9583333333333334,
+    "defense": 0.7619047619047619
+  },
+  "external_v6_used": false,
+  "locked_hard_used": false,
+  "promotion_allowed": false
+}

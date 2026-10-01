@@ -1,0 +1,654 @@
+{
+  "schema": "xss-source-head-v4e-training",
+  "checkpoint_source": "base-model",
+  "trainable_parameters": 67589,
+  "backbone_frozen": true,
+  "sink_head_frozen": true,
+  "defense_head_frozen": true,
+  "source_head_only": true,
+  "train_source_rows": 664,
+  "dev_rows": 498,
+  "baseline": {
+    "source": {
+      "macro_f1": 0.9378208143020782,
+      "accuracy": 0.9404761904761905,
+      "per_class_f1": {
+        "NONE": 1.0,
+        "BROWSER": 0.9473684210526315,
+        "SERVER": 0.9411764705882353,
+        "FRAMEWORK": 0.972972972972973,
+        "OTHER": 0.8275862068965517
+      }
+    },
+    "sink": {
+      "macro_f1": 0.9861111111111112,
+      "accuracy": 0.9880952380952381,
+      "per_class_f1": {
+        "NONE": 0.9583333333333334,
+        "DANGEROUS_HTML": 1.0,
+        "DANGEROUS_JS": 1.0,
+        "DANGEROUS_URL": 1.0,
+        "SAFE_OUTPUT": 1.0,
+        "OTHER": 0.9583333333333334
+      }
+    },
+    "defense": {
+      "macro_f1": 0.9156462585034014,
+      "accuracy": 0.9074074074074074,
+      "per_class_f1": {
+        "NONE": 1.0,
+        "SANITIZATION": 1.0,
+        "CONTEXTUAL_ENCODING": 0.9333333333333333,
+        "FRAMEWORK_ESCAPING": 0.8571428571428571,
+        "SAFE_DOM_API": 1.0,
+        "INPUT_CONSTRAINT": 0.8571428571428571,
+        "OTHER": 0.7619047619047619
+      }
+    },
+    "mean_macro_f1": 0.9465260613055303
+  },
+  "best": {
+    "source": {
+      "macro_f1": 1.0,
+      "accuracy": 1.0,
+      "per_class_f1": {
+        "NONE": 1.0,
+        "BROWSER": 1.0,
+        "SERVER": 1.0,
+        "FRAMEWORK": 1.0,
+        "OTHER": 1.0
+      }
+    },
+    "sink": {
+      "macro_f1": 0.9861111111111112,
+      "accuracy": 0.9880952380952381,
+      "per_class_f1": {
+        "NONE": 0.9583333333333334,
+        "DANGEROUS_HTML": 1.0,
+        "DANGEROUS_JS": 1.0,
+        "DANGEROUS_URL": 1.0,
+        "SAFE_OUTPUT": 1.0,
+        "OTHER": 0.9583333333333334
+      }
+    },
+    "defense": {
+      "macro_f1": 0.9156462585034014,
+      "accuracy": 0.9074074074074074,
+      "per_class_f1": {
+        "NONE": 1.0,
+        "SANITIZATION": 1.0,
+        "CONTEXTUAL_ENCODING": 0.9333333333333333,
+        "FRAMEWORK_ESCAPING": 0.8571428571428571,
+        "SAFE_DOM_API": 1.0,
+        "INPUT_CONSTRAINT": 0.8571428571428571,
+        "OTHER": 0.7619047619047619
+      }
+    },
+    "mean_macro_f1": 0.9672524565381709
+  },
+  "best_source_macro_f1": 1.0,
+  "history": [
+    {
+      "epoch": 0,
+      "dev": {
+        "source": {
+          "macro_f1": 0.9378208143020782,
+          "accuracy": 0.9404761904761905,
+          "per_class_f1": {
+            "NONE": 1.0,
+            "BROWSER": 0.9473684210526315,
+            "SERVER": 0.9411764705882353,
+            "FRAMEWORK": 0.972972972972973,
+            "OTHER": 0.8275862068965517
+          }
+        },
+        "sink": {
+          "macro_f1": 0.9861111111111112,
+          "accuracy": 0.9880952380952381,
+          "per_class_f1": {
+            "NONE": 0.9583333333333334,
+            "DANGEROUS_HTML": 1.0,
+            "DANGEROUS_JS": 1.0,
+            "DANGEROUS_URL": 1.0,
+            "SAFE_OUTPUT": 1.0,
+            "OTHER": 0.9583333333333334
+          }
+        },
+        "defense": {
+          "macro_f1": 0.9156462585034014,
+          "accuracy": 0.9074074074074074,
+          "per_class_f1": {
+            "NONE": 1.0,
+            "SANITIZATION": 1.0,
+            "CONTEXTUAL_ENCODING": 0.9333333333333333,
+            "FRAMEWORK_ESCAPING": 0.8571428571428571,
+            "SAFE_DOM_API": 1.0,
+            "INPUT_CONSTRAINT": 0.8571428571428571,
+            "OTHER": 0.7619047619047619
+          }
+        },
+        "mean_macro_f1": 0.9465260613055303
+      }
+    },
+    {
+      "epoch": 1,
+      "train_loss": 0.28977411511269485,
+      "dev": {
+        "source": {
+          "macro_f1": 0.9696225522172339,
+          "accuracy": 0.9702380952380952,
+          "per_class_f1": {
+            "NONE": 1.0,
+            "BROWSER": 1.0,
+            "SERVER": 0.9411764705882353,
+            "FRAMEWORK": 0.9863013698630136,
+            "OTHER": 0.9206349206349206
+          }
+        },
+        "sink": {
+          "macro_f1": 0.9861111111111112,
+          "accuracy": 0.9880952380952381,
+          "per_class_f1": {
+            "NONE": 0.9583333333333334,
+            "DANGEROUS_HTML": 1.0,
+            "DANGEROUS_JS": 1.0,
+            "DANGEROUS_URL": 1.0,
+            "SAFE_OUTPUT": 1.0,
+            "OTHER": 0.9583333333333334
+          }
+        },
+        "defense": {
+          "macro_f1": 0.9156462585034014,
+          "accuracy": 0.9074074074074074,
+          "per_class_f1": {
+            "NONE": 1.0,
+            "SANITIZATION": 1.0,
+            "CONTEXTUAL_ENCODING": 0.9333333333333333,
+            "FRAMEWORK_ESCAPING": 0.8571428571428571,
+            "SAFE_DOM_API": 1.0,
+            "INPUT_CONSTRAINT": 0.8571428571428571,
+            "OTHER": 0.7619047619047619
+          }
+        },
+        "mean_macro_f1": 0.9571266406105822
+      }
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.19371556998653847,
+      "dev": {
+        "source": {
+          "macro_f1": 1.0,
+          "accuracy": 1.0,
+          "per_class_f1": {
+            "NONE": 1.0,
+            "BROWSER": 1.0,
+            "SERVER": 1.0,
+            "FRAMEWORK": 1.0,
+            "OTHER": 1.0
+          }
+        },
+        "sink": {
+          "macro_f1": 0.9861111111111112,
+          "accuracy": 0.9880952380952381,
+          "per_class_f1": {
+            "NONE": 0.9583333333333334,
+            "DANGEROUS_HTML": 1.0,
+            "DANGEROUS_JS": 1.0,
+            "DANGEROUS_URL": 1.0,
+            "SAFE_OUTPUT": 1.0,
+            "OTHER": 0.9583333333333334
+          }
+        },
+        "defense": {
+          "macro_f1": 0.9156462585034014,
+          "accuracy": 0.9074074074074074,
+          "per_class_f1": {
+            "NONE": 1.0,
+            "SANITIZATION": 1.0,
+            "CONTEXTUAL_ENCODING": 0.9333333333333333,
+            "FRAMEWORK_ESCAPING": 0.8571428571428571,
+            "SAFE_DOM_API": 1.0,
+            "INPUT_CONSTRAINT": 0.8571428571428571,
+            "OTHER": 0.7619047619047619
+          }
+        },
+        "mean_macro_f1": 0.9672524565381709
+      }
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.13580818779089235,
+      "dev": {
+        "source": {
+          "macro_f1": 0.9938704434641281,
+          "accuracy": 0.9940476190476191,
+          "per_class_f1": {
+            "NONE": 1.0,
+            "BROWSER": 1.0,
+            "SERVER": 1.0,
+            "FRAMEWORK": 0.9863013698630136,
+            "OTHER": 0.9830508474576272
+          }
+        },
+        "sink": {
+          "macro_f1": 0.9861111111111112,
+          "accuracy": 0.9880952380952381,
+          "per_class_f1": {
+            "NONE": 0.9583333333333334,
+            "DANGEROUS_HTML": 1.0,
+            "DANGEROUS_JS": 1.0,
+            "DANGEROUS_URL": 1.0,
+            "SAFE_OUTPUT": 1.0,
+            "OTHER": 0.9583333333333334
+          }
+        },
+        "defense": {
+          "macro_f1": 0.9156462585034014,
+          "accuracy": 0.9074074074074074,
+          "per_class_f1": {
+            "NONE": 1.0,
+            "SANITIZATION": 1.0,
+            "CONTEXTUAL_ENCODING": 0.9333333333333333,
+            "FRAMEWORK_ESCAPING": 0.8571428571428571,
+            "SAFE_DOM_API": 1.0,
+            "INPUT_CONSTRAINT": 0.8571428571428571,
+            "OTHER": 0.7619047619047619
+          }
+        },
+        "mean_macro_f1": 0.9652092710262136
+      }
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.11992316354404796,
+      "dev": {
+        "source": {
+          "macro_f1": 0.9938704434641281,
+          "accuracy": 0.9940476190476191,
+          "per_class_f1": {
+            "NONE": 1.0,
+            "BROWSER": 1.0,
+            "SERVER": 1.0,
+            "FRAMEWORK": 0.9863013698630136,
+            "OTHER": 0.9830508474576272
+          }
+        },
+        "sink": {
+          "macro_f1": 0.9861111111111112,
+          "accuracy": 0.9880952380952381,
+          "per_class_f1": {
+            "NONE": 0.9583333333333334,
+            "DANGEROUS_HTML": 1.0,
+            "DANGEROUS_JS": 1.0,
+            "DANGEROUS_URL": 1.0,
+            "SAFE_OUTPUT": 1.0,
+            "OTHER": 0.9583333333333334
+          }
+        },
+        "defense": {
+          "macro_f1": 0.9156462585034014,
+          "accuracy": 0.9074074074074074,
+          "per_class_f1": {
+            "NONE": 1.0,
+            "SANITIZATION": 1.0,
+            "CONTEXTUAL_ENCODING": 0.9333333333333333,
+            "FRAMEWORK_ESCAPING": 0.8571428571428571,
+            "SAFE_DOM_API": 1.0,
+            "INPUT_CONSTRAINT": 0.8571428571428571,
+            "OTHER": 0.7619047619047619
+          }
+        },
+        "mean_macro_f1": 0.9652092710262136
+      }
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.0943236428905617,
+      "dev": {
+        "source": {
+          "macro_f1": 0.9870850337238746,
+          "accuracy": 0.9880952380952381,
+          "per_class_f1": {
+            "NONE": 0.9836065573770492,
+            "BROWSER": 1.0,
+            "SERVER": 1.0,
+            "FRAMEWORK": 0.9863013698630136,
+            "OTHER": 0.9655172413793104
+          }
+        },
+        "sink": {
+          "macro_f1": 0.9861111111111112,
+          "accuracy": 0.9880952380952381,
+          "per_class_f1": {
+            "NONE": 0.9583333333333334,
+            "DANGEROUS_HTML": 1.0,
+            "DANGEROUS_JS": 1.0,
+            "DANGEROUS_URL": 1.0,
+            "SAFE_OUTPUT": 1.0,
+            "OTHER": 0.9583333333333334
+          }
+        },
+        "defense": {
+          "macro_f1": 0.9156462585034014,
+          "accuracy": 0.9074074074074074,
+          "per_class_f1": {
+            "NONE": 1.0,
+            "SANITIZATION": 1.0,
+            "CONTEXTUAL_ENCODING": 0.9333333333333333,
+            "FRAMEWORK_ESCAPING": 0.8571428571428571,
+            "SAFE_DOM_API": 1.0,
+            "INPUT_CONSTRAINT": 0.8571428571428571,
+            "OTHER": 0.7619047619047619
+          }
+        },
+        "mean_macro_f1": 0.9629474677794624
+      }
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.07988099787722934,
+      "dev": {
+        "source": {
+          "macro_f1": 0.9870850337238746,
+          "accuracy": 0.9880952380952381,
+          "per_class_f1": {
+            "NONE": 0.9836065573770492,
+            "BROWSER": 1.0,
+            "SERVER": 1.0,
+            "FRAMEWORK": 0.9863013698630136,
+            "OTHER": 0.9655172413793104
+          }
+        },
+        "sink": {
+          "macro_f1": 0.9861111111111112,
+          "accuracy": 0.9880952380952381,
+          "per_class_f1": {
+            "NONE": 0.9583333333333334,
+            "DANGEROUS_HTML": 1.0,
+            "DANGEROUS_JS": 1.0,
+            "DANGEROUS_URL": 1.0,
+            "SAFE_OUTPUT": 1.0,
+            "OTHER": 0.9583333333333334
+          }
+        },
+        "defense": {
+          "macro_f1": 0.9156462585034014,
+          "accuracy": 0.9074074074074074,
+          "per_class_f1": {
+            "NONE": 1.0,
+            "SANITIZATION": 1.0,
+            "CONTEXTUAL_ENCODING": 0.9333333333333333,
+            "FRAMEWORK_ESCAPING": 0.8571428571428571,
+            "SAFE_DOM_API": 1.0,
+            "INPUT_CONSTRAINT": 0.8571428571428571,
+            "OTHER": 0.7619047619047619
+          }
+        },
+        "mean_macro_f1": 0.9629474677794624
+      }
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.07509021867405284,
+      "dev": {
+        "source": {
+          "macro_f1": 0.9870850337238746,
+          "accuracy": 0.9880952380952381,
+          "per_class_f1": {
+            "NONE": 0.9836065573770492,
+            "BROWSER": 1.0,
+            "SERVER": 1.0,
+            "FRAMEWORK": 0.9863013698630136,
+            "OTHER": 0.9655172413793104
+          }
+        },
+        "sink": {
+          "macro_f1": 0.9861111111111112,
+          "accuracy": 0.9880952380952381,
+          "per_class_f1": {
+            "NONE": 0.9583333333333334,
+            "DANGEROUS_HTML": 1.0,
+            "DANGEROUS_JS": 1.0,
+            "DANGEROUS_URL": 1.0,
+            "SAFE_OUTPUT": 1.0,
+            "OTHER": 0.9583333333333334
+          }
+        },
+        "defense": {
+          "macro_f1": 0.9156462585034014,
+          "accuracy": 0.9074074074074074,
+          "per_class_f1": {
+            "NONE": 1.0,
+            "SANITIZATION": 1.0,
+            "CONTEXTUAL_ENCODING": 0.9333333333333333,
+            "FRAMEWORK_ESCAPING": 0.8571428571428571,
+            "SAFE_DOM_API": 1.0,
+            "INPUT_CONSTRAINT": 0.8571428571428571,
+            "OTHER": 0.7619047619047619
+          }
+        },
+        "mean_macro_f1": 0.9629474677794624
+      }
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.05808132074095986,
+      "dev": {
+        "source": {
+          "macro_f1": 0.9870850337238746,
+          "accuracy": 0.9880952380952381,
+          "per_class_f1": {
+            "NONE": 0.9836065573770492,
+            "BROWSER": 1.0,
+            "SERVER": 1.0,
+            "FRAMEWORK": 0.9863013698630136,
+            "OTHER": 0.9655172413793104
+          }
+        },
+        "sink": {
+          "macro_f1": 0.9861111111111112,
+          "accuracy": 0.9880952380952381,
+          "per_class_f1": {
+            "NONE": 0.9583333333333334,
+            "DANGEROUS_HTML": 1.0,
+            "DANGEROUS_JS": 1.0,
+            "DANGEROUS_URL": 1.0,
+            "SAFE_OUTPUT": 1.0,
+            "OTHER": 0.9583333333333334
+          }
+        },
+        "defense": {
+          "macro_f1": 0.9156462585034014,
+          "accuracy": 0.9074074074074074,
+          "per_class_f1": {
+            "NONE": 1.0,
+            "SANITIZATION": 1.0,
+            "CONTEXTUAL_ENCODING": 0.9333333333333333,
+            "FRAMEWORK_ESCAPING": 0.8571428571428571,
+            "SAFE_DOM_API": 1.0,
+            "INPUT_CONSTRAINT": 0.8571428571428571,
+            "OTHER": 0.7619047619047619
+          }
+        },
+        "mean_macro_f1": 0.9629474677794624
+      }
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.05145076069642197,
+      "dev": {
+        "source": {
+          "macro_f1": 0.9870850337238746,
+          "accuracy": 0.9880952380952381,
+          "per_class_f1": {
+            "NONE": 0.9836065573770492,
+            "BROWSER": 1.0,
+            "SERVER": 1.0,
+            "FRAMEWORK": 0.9863013698630136,
+            "OTHER": 0.9655172413793104
+          }
+        },
+        "sink": {
+          "macro_f1": 0.9861111111111112,
+          "accuracy": 0.9880952380952381,
+          "per_class_f1": {
+            "NONE": 0.9583333333333334,
+            "DANGEROUS_HTML": 1.0,
+            "DANGEROUS_JS": 1.0,
+            "DANGEROUS_URL": 1.0,
+            "SAFE_OUTPUT": 1.0,
+            "OTHER": 0.9583333333333334
+          }
+        },
+        "defense": {
+          "macro_f1": 0.9156462585034014,
+          "accuracy": 0.9074074074074074,
+          "per_class_f1": {
+            "NONE": 1.0,
+            "SANITIZATION": 1.0,
+            "CONTEXTUAL_ENCODING": 0.9333333333333333,
+            "FRAMEWORK_ESCAPING": 0.8571428571428571,
+            "SAFE_DOM_API": 1.0,
+            "INPUT_CONSTRAINT": 0.8571428571428571,
+            "OTHER": 0.7619047619047619
+          }
+        },
+        "mean_macro_f1": 0.9629474677794624
+      }
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.04742740687321533,
+      "dev": {
+        "source": {
+          "macro_f1": 0.9870850337238746,
+          "accuracy": 0.9880952380952381,
+          "per_class_f1": {
+            "NONE": 0.9836065573770492,
+            "BROWSER": 1.0,
+            "SERVER": 1.0,
+            "FRAMEWORK": 0.9863013698630136,
+            "OTHER": 0.9655172413793104
+          }
+        },
+        "sink": {
+          "macro_f1": 0.9861111111111112,
+          "accuracy": 0.9880952380952381,
+          "per_class_f1": {
+            "NONE": 0.9583333333333334,
+            "DANGEROUS_HTML": 1.0,
+            "DANGEROUS_JS": 1.0,
+            "DANGEROUS_URL": 1.0,
+            "SAFE_OUTPUT": 1.0,
+            "OTHER": 0.9583333333333334
+          }
+        },
+        "defense": {
+          "macro_f1": 0.9156462585034014,
+          "accuracy": 0.9074074074074074,
+          "per_class_f1": {
+            "NONE": 1.0,
+            "SANITIZATION": 1.0,
+            "CONTEXTUAL_ENCODING": 0.9333333333333333,
+            "FRAMEWORK_ESCAPING": 0.8571428571428571,
+            "SAFE_DOM_API": 1.0,
+            "INPUT_CONSTRAINT": 0.8571428571428571,
+            "OTHER": 0.7619047619047619
+          }
+        },
+        "mean_macro_f1": 0.9629474677794624
+      }
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.04611878528852354,
+      "dev": {
+        "source": {
+          "macro_f1": 0.9870850337238746,
+          "accuracy": 0.9880952380952381,
+          "per_class_f1": {
+            "NONE": 0.9836065573770492,
+            "BROWSER": 1.0,
+            "SERVER": 1.0,
+            "FRAMEWORK": 0.9863013698630136,
+            "OTHER": 0.9655172413793104
+          }
+        },
+        "sink": {
+          "macro_f1": 0.9861111111111112,
+          "accuracy": 0.9880952380952381,
+          "per_class_f1": {
+            "NONE": 0.9583333333333334,
+            "DANGEROUS_HTML": 1.0,
+            "DANGEROUS_JS": 1.0,
+            "DANGEROUS_URL": 1.0,
+            "SAFE_OUTPUT": 1.0,
+            "OTHER": 0.9583333333333334
+          }
+        },
+        "defense": {
+          "macro_f1": 0.9156462585034014,
+          "accuracy": 0.9074074074074074,
+          "per_class_f1": {
+            "NONE": 1.0,
+            "SANITIZATION": 1.0,
+            "CONTEXTUAL_ENCODING": 0.9333333333333333,
+            "FRAMEWORK_ESCAPING": 0.8571428571428571,
+            "SAFE_DOM_API": 1.0,
+            "INPUT_CONSTRAINT": 0.8571428571428571,
+            "OTHER": 0.7619047619047619
+          }
+        },
+        "mean_macro_f1": 0.9629474677794624
+      }
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.04666939614848657,
+      "dev": {
+        "source": {
+          "macro_f1": 0.9870850337238746,
+          "accuracy": 0.9880952380952381,
+          "per_class_f1": {
+            "NONE": 0.9836065573770492,
+            "BROWSER": 1.0,
+            "SERVER": 1.0,
+            "FRAMEWORK": 0.9863013698630136,
+            "OTHER": 0.9655172413793104
+          }
+        },
+        "sink": {
+          "macro_f1": 0.9861111111111112,
+          "accuracy": 0.9880952380952381,
+          "per_class_f1": {
+            "NONE": 0.9583333333333334,
+            "DANGEROUS_HTML": 1.0,
+            "DANGEROUS_JS": 1.0,
+            "DANGEROUS_URL": 1.0,
+            "SAFE_OUTPUT": 1.0,
+            "OTHER": 0.9583333333333334
+          }
+        },
+        "defense": {
+          "macro_f1": 0.9156462585034014,
+          "accuracy": 0.9074074074074074,
+          "per_class_f1": {
+            "NONE": 1.0,
+            "SANITIZATION": 1.0,
+            "CONTEXTUAL_ENCODING": 0.9333333333333333,
+            "FRAMEWORK_ESCAPING": 0.8571428571428571,
+            "SAFE_DOM_API": 1.0,
+            "INPUT_CONSTRAINT": 0.8571428571428571,
+            "OTHER": 0.7619047619047619
+          }
+        },
+        "mean_macro_f1": 0.9629474677794624
+      }
+    }
+  ],
+  "external_v6_used": false,
+  "locked_hard_used": false,
+  "promotion_allowed": false,
+  "runtime_seconds": 19.06
+}

@@ -1,0 +1,11 @@
+{
+  "schema": "xss-flow-branch-v2",
+  "flow_backbone": "flow_backbone",
+  "labels": [
+    "CONNECTED",
+    "DISCONNECTED",
+    "UNKNOWN"
+  ],
+  "final_judge": false,
+  "confirmation_authority": "deterministic_or_browser_execution_only"
+}

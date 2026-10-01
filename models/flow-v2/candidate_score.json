@@ -1,0 +1,15 @@
+{
+  "slug": "f0-lr3e5-e8",
+  "viable": true,
+  "macro_f1": 0.9290376623459894,
+  "accuracy": 0.9296296296296296,
+  "recalls": {
+    "CONNECTED": 0.9777777777777777,
+    "DISCONNECTED": 0.8555555555555555,
+    "UNKNOWN": 0.9555555555555556
+  },
+  "min_recall": 0.8555555555555555,
+  "architecture": "standalone-v04-flow-branch",
+  "locked_external_used": false,
+  "final_judge": false
+}
