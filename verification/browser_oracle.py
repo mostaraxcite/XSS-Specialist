@@ -183,7 +183,7 @@ def install_scope_guard(context, in_scope, blocked: list, post: dict | None = No
 
 
 def run_probe_on_url(url: str, marker: str, delivery: str = "query", param: str = "q",
-                     timeout_ms: int = 4000, extra_headers: dict | None = None,
+                     timeout_ms: int = 12000, extra_headers: dict | None = None,
                      cookies: list | None = None, raw_signature: str = "",
                      interactions: list | None = None, in_scope=None,
                      post_data: dict | None = None) -> dict:
@@ -227,7 +227,7 @@ def run_probe_on_url(url: str, marker: str, delivery: str = "query", param: str 
             msgs = []
             page.on("console", lambda m: msgs.append({"type": m.type, "text": m.text[:300]}))
             try:
-                resp = page.goto(url, wait_until="load", timeout=timeout_ms)
+                resp = page.goto(url, wait_until="domcontentloaded", timeout=timeout_ms)
             except Exception as e:
                 # timeouts / aborted navigations are evidence of "no result", not a crash
                 result["error"] = f"navigation_failed:{str(e).splitlines()[0][:200]}"
