@@ -27,7 +27,7 @@ def _norm_route(url: str) -> str:
     return urlunparse(p._replace(query="&".join(q), fragment=""))
 
 
-def crawl(enforcer: Enforcer, seed: str | None = None, timeout_ms: int = 4000) -> dict:
+def crawl(enforcer: Enforcer, seed: str | None = None, timeout_ms: int = 12000) -> dict:
     """Returns {routes, forms, links, js_routes, graph}. Deterministic BFS."""
     from playwright.sync_api import sync_playwright
     scope = enforcer.scope
@@ -62,9 +62,18 @@ def crawl(enforcer: Enforcer, seed: str | None = None, timeout_ms: int = 4000) -
                     continue
                 seen.add(key)
                 try:
-                    resp = page.goto(url, wait_until="load", timeout=timeout_ms)
-                except Exception:
-                    enforcer.note_request(url, status=None, kind="crawl", depth=depth)
+                    resp = page.goto(url, wait_until="domcontentloaded", timeout=timeout_ms)
+                except Exception as exc:
+                    # Older/slow targets may fail to reach the full load event even after
+                    # useful HTML has committed. Preserve the failure reason for evidence
+                    # instead of silently returning an empty crawl.
+                    enforcer.note_request(url, final_url=page.url or url, status=None,
+                                          kind="crawl", depth=depth)
+                    enforcer.blocked_log.append({
+                        "url": url,
+                        "reason": f"crawl_navigation_error:{type(exc).__name__}:{exc}",
+                        "kind": "crawl",
+                    })
                     continue
                 final = page.url
                 enforcer.note_request(url, final_url=final, status=resp.status if resp else None,
