@@ -1,4 +1,5 @@
 name: Canary testaspnet ReadNews XSS
+# rerun: regex-fix
 
 on:
   push:
