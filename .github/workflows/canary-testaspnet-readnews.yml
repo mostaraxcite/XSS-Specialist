@@ -1,0 +1,77 @@
+name: Canary testaspnet ReadNews XSS
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/canary-testaspnet-readnews.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  canary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install uv
+        run: python -m pip install --upgrade uv
+
+      - name: Install runtime dependencies
+        run: uv sync --group dev --group slm
+
+      - name: Install Chromium
+        run: uv run playwright install --with-deps chromium
+
+      - name: Re-establish local acceptance gate
+        run: uv run python -m live.evaluate
+
+      - name: Run bounded authorized canary
+        shell: bash
+        run: |
+          set -euo pipefail
+          uv run python - <<'PY'
+          import json
+          from live.pilot import PilotAuthorization, run_pilot
+
+          auth = PilotAuthorization(
+              target="http://testaspnet.vulnweb.com/ReadNews.aspx?id=0&NewsAd=ads/def.html",
+              operator_identity="Mostafa",
+              assessment_id="testaspnet-readnews-urlattr-canary",
+              authorization_acknowledged=True,
+              allowed_prefixes=["/ReadNews.aspx"],
+              request_budget=16,
+              rate_limit_rps=1.0,
+              allowed_test_classes=["reflected"],
+              stored_xss_permitted=False,
+          )
+          saved = run_pilot(auth, authorized_external=True)
+          print(json.dumps(saved["summary"], indent=2))
+          print("evidence ->", saved["dir"])
+
+          findings = []
+          with open(saved["dir"] + "/findings.jsonl", encoding="utf-8") as fh:
+              for line in fh:
+                  if line.strip():
+                      findings.append(json.loads(line))
+
+          news = [f for f in findings if f.get("parameter") == "NewsAd"]
+          print("NewsAd findings:", json.dumps(news, indent=2))
+          assert news, "NewsAd candidate was not discovered"
+          assert any(f.get("status") == "CONFIRMED" and f.get("browser_result") == "executed" for f in news), news
+          PY
+
+      - name: Upload canary evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: testaspnet-readnews-urlattr-canary
+          path: reports/live_assessments/testaspnet-readnews-urlattr-canary
+          if-no-files-found: warn
+          retention-days: 14
