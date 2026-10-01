@@ -2,10 +2,7 @@ name: Canary testaspnet ReadNews XSS
 # rerun: regex-fix
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - ".github/workflows/canary-testaspnet-readnews.yml"
+  workflow_dispatch:
 
 permissions:
   contents: read
