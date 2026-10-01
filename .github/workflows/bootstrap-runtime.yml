@@ -1,4 +1,5 @@
 name: Bootstrap Frozen XSS Runtime
+# trigger-bootstrap-v1
 
 on:
   push:
