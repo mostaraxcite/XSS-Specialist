@@ -37,13 +37,13 @@ jobs:
         run: uv run playwright install --with-deps chromium
 
       - name: Runtime doctor
-        run: uv run python -m runtime.xss_specialist_runtime doctor
+        run: uv run xss doctor
 
       - name: Load frozen v4e + Flow v2 and verify structural inference
         shell: bash
         run: |
           set -euxo pipefail
-          uv run python -m runtime.xss_specialist_runtime fields             --source "location.hash"             --sink "element.innerHTML"             --statement "element.innerHTML = location.hash"             > /tmp/inference.json
+          uv run xss fields --source "location.hash" --sink "element.innerHTML" --statement "element.innerHTML = location.hash" > /tmp/inference.json
           cat /tmp/inference.json
           python - <<'PY'
           import json
@@ -57,7 +57,7 @@ jobs:
 
       - name: Local browser acceptance gate
         run: |
-          uv run python -m live.evaluate
+          uv run xss accept
           python - <<'PY'
           import json
           from pathlib import Path
