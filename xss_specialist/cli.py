@@ -72,7 +72,7 @@ def _scan(args) -> int:
         excluded_paths=args.exclude or [],
         request_budget=args.budget,
         rate_limit_rps=args.rate,
-        allowed_test_classes=["reflected", "dom"],
+        allowed_test_classes=args.test_class or ["reflected", "dom"],
         stored_xss_permitted=False,
     )
 
@@ -106,6 +106,12 @@ def main(argv=None):
     p.add_argument("--exclude", action="append", default=[])
     p.add_argument("--budget", type=int, default=80)
     p.add_argument("--rate", type=float, default=1.0)
+    p.add_argument(
+        "--test-class",
+        action="append",
+        choices=["reflected", "dom", "post"],
+        help="repeat to select classes; default is reflected + dom",
+    )
 
     args = ap.parse_args(argv)
 
