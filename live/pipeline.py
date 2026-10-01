@@ -40,14 +40,14 @@ def classify_context(html_src: str, marker: str) -> str:
     if tag_open > tag_close:
         seg = before[tag_open:]
 
-        quoted = re.search(r'([:\\w-]+)\\s*=\\s*"[^"]*$', seg)
+        quoted = re.search(r'([:\w-]+)\s*=\s*"[^"]*$', seg)
         if quoted is None:
-            quoted = re.search(r"([:\\w-]+)\\s*=\\s*'[^']*$", seg)
+            quoted = re.search(r"([:\w-]+)\s*=\s*'[^']*$", seg)
         if quoted:
             attr = quoted.group(1).lower()
             return "html_attr_url" if attr in _URL_ATTRS else "html_attr"
 
-        unquoted = re.search(r"([:\\w-]+)\\s*=\\s*[^\\s>]*$", seg)
+        unquoted = re.search(r"([:\w-]+)\s*=\s*[^\s>]*$", seg)
         if unquoted:
             attr = unquoted.group(1).lower()
             return "html_attr_url" if attr in _URL_ATTRS else "html_attr_unquoted"
@@ -88,7 +88,7 @@ def assess_candidate(candidate: dict, enforcer, fid: str, timeout_ms: int = 1200
     if "interactions" not in candidate:
         win = marker_ev.get("context_window", "") or ""
         acts = []
-        m = re.search(r"on(\\w+)\\s*=", win)
+        m = re.search(r"on(\w+)\s*=", win)
         if m:
             ev_name = m.group(1).lower()
             acts = {
