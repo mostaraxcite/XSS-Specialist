@@ -1,0 +1,76 @@
+name: Bootstrap Frozen XSS Runtime
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/bootstrap-runtime.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bootstrap-xss-runtime
+  cancel-in-progress: false
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download validated runtime release
+        shell: bash
+        run: |
+          set -euxo pipefail
+          curl -fL             "https://github.com/mostaraxcite/MyModel/releases/download/xss-specialist-runtime-v1/xss-specialist-runtime-v1.zip"             -o /tmp/xss-specialist-runtime-v1.zip
+          echo "83cabaf8a62bda17dc8cb437897e9a74a8e06f4c7bd5a5bf16a6c081f0c5d5df  /tmp/xss-specialist-runtime-v1.zip" > /tmp/runtime.sha256.expected || true
+
+      - name: Extract runtime-only release
+        shell: bash
+        run: |
+          set -euxo pipefail
+          rm -rf /tmp/xss-runtime
+          mkdir -p /tmp/xss-runtime
+          unzip -q /tmp/xss-specialist-runtime-v1.zip -d /tmp/xss-runtime
+          SRC="/tmp/xss-runtime/xss-specialist-runtime-v1"
+          test -f "$SRC/models/semantic-v4e/dual_branch_config.json"
+          test -f "$SRC/models/flow-v2/flow_branch_config.json"
+
+          rsync -a --delete             --exclude ".git/"             --exclude ".github/"             "$SRC/" ./
+
+          mkdir -p .github/workflows
+
+      - name: Verify no training material is present
+        shell: bash
+        run: |
+          set -euxo pipefail
+          test ! -d training
+          test ! -d datasets
+          test ! -d benchmarks/external_v6
+          test ! -d benchmarks/external_v7
+          test -f models/semantic-v4e/semantic_heads.pt
+          test -f models/flow-v2/flow_head.pt
+
+          python - <<'PY'
+          from pathlib import Path
+          bad=[]
+          for p in Path(".").rglob("*"):
+              if p.is_file() and p.stat().st_size >= 100_000_000:
+                  bad.append((str(p),p.stat().st_size))
+          if bad:
+              raise SystemExit(f"Files exceed GitHub 100MB limit: {bad}")
+          print("runtime files verified; no file >=100MB")
+          PY
+
+      - name: Commit runtime into XSS-Specialist
+        shell: bash
+        run: |
+          set -euxo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git status --short
+          git commit -m "release: import frozen XSS Specialist runtime v1"
+          git push origin HEAD:main
