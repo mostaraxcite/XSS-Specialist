@@ -48,6 +48,7 @@ def correlate(candidate: dict, marker_ev: dict, exec_evs: list, sanitizer_verdic
     # a harmless marker reflecting is NOT evidence of XSS; the dangerous payload must survive UNENCODED
     raw_live = any(e.get("raw_reflected") for e in exec_evs)
     blocked = marker_ev.get("blocked") or (bool(exec_evs) and all(e.get("blocked") for e in exec_evs))
+    probe_error = bool(marker_ev.get("error")) or any(bool(e.get("error")) for e in exec_evs)
     ctx = candidate.get("context", "unknown")
     dom = ctx in ("dom_html", "dom_attr")
     xss_class = "dom" if dom else ("reflected" if reflected else "unknown")
@@ -61,7 +62,7 @@ def correlate(candidate: dict, marker_ev: dict, exec_evs: list, sanitizer_verdic
     elif raw_live and san_status != "VERIFIED_SAFE":
         # dangerous payload survived unencoded into a live context, no execution confirmation yet
         status, conf = LIKELY, 0.6
-    elif blocked:
+    elif blocked or probe_error:
         status, conf = INCONCLUSIVE, 0.2
     elif reflected and not raw_live:
         # input echoes but dangerous chars are encoded / not present -> not exploitable here
@@ -78,7 +79,10 @@ def correlate(candidate: dict, marker_ev: dict, exec_evs: list, sanitizer_verdic
         sink=candidate.get("sink", ""), context=ctx,
         existing_sanitizer=san_name,
         sanitizer_verification=f"{san_status}: {san_note}" if san_status else "none observed",
-        browser_result="executed" if executed else ("blocked" if blocked else "not-executed"),
+        browser_result=("executed" if executed else
+                        "blocked" if blocked else
+                        "error" if probe_error else
+                        "not-executed"),
         reproduction={"requested_url": winning.get("requested_url"),
                       "final_url": winning.get("final_url"), "status": winning.get("status"),
                       "marker": winning.get("marker"), "probe_note": winning.get("probe_note"),
