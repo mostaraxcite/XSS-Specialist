@@ -18,6 +18,9 @@ from live.scope import Enforcer
 from verification.browser_oracle import install_scope_guard
 
 _JS_ROUTE = re.compile(r"""["'](/[A-Za-z0-9_\-/]{1,80}(?:\?[^"']*)?)["']""")
+_DOM_HASH_SOURCE = re.compile(
+    r"(?:window\.)?location\.hash|document\.(?:URL|documentURI)|hashchange", re.IGNORECASE
+)
 
 
 def _norm_route(url: str) -> str:
@@ -104,6 +107,7 @@ def crawl(enforcer: Enforcer, seed: str | None = None, timeout_ms: int = 12000) 
                     body = resp.text() if resp else ""
                 except Exception:
                     body = ""
+                routes[-1]["dom_hash_source"] = bool(_DOM_HASH_SOURCE.search(body))
                 for m in _JS_ROUTE.findall(body):
                     cand = urljoin(final, m)
                     if scope.in_scope(cand)[0]:
@@ -139,7 +143,9 @@ def map_inputs(crawl_result: dict) -> list[dict]:
             delivery = "query" if f["method"] == "get" else "form"
             add(f["action"], field["name"], f["method"].upper(), "POST form field" if f["method"] == "post"
                 else "GET parameter", delivery, source="form")
-    # DOM-source candidates: every route is also a DOM candidate (hash-delivered)
+    # DOM hash candidates require evidence that this page actually consumes a hash-like source.
+    # Do not spend the request budget probing '#' on every route by default.
     for r in crawl_result["routes"]:
-        add(r["url"], "#", "GET", "URL fragment (DOM)", "hash", source="dom-source")
+        if r.get("dom_hash_source"):
+            add(r["url"], "#", "GET", "URL fragment (DOM)", "hash", source="dom-source")
     return cands
