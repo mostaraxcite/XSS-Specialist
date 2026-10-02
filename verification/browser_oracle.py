@@ -172,18 +172,34 @@ def _survival_evidence(payload: str, marker: str, raw_body: str, dom_txt: str) -
     dangerous delimiter live. Evidence is marker-local to avoid matching unrelated page markup.
     """
     expected = _critical_tokens(payload)
-    windows = []
-    for body in (raw_body or "", dom_txt or ""):
-        start = 0
-        while marker and True:
-            i = body.find(marker, start)
-            if i < 0:
+    payload_marker = (payload or "").find(marker)
+    marker_seen = False
+    survived = []
+    for token in expected:
+        token_pos = (payload or "").find(token)
+        if payload_marker < 0 or token_pos < 0:
+            continue
+        before = token_pos < payload_marker
+        distance = abs(token_pos - payload_marker) + len(token) + 16
+        for body in (raw_body or "", dom_txt or ""):
+            start = 0
+            while marker:
+                i = body.find(marker, start)
+                if i < 0:
+                    break
+                marker_seen = True
+                if before:
+                    segment = body[max(0, i - distance):i]
+                else:
+                    segment = body[i + len(marker):i + len(marker) + distance]
+                if _unescaped(segment, token):
+                    survived.append(token)
+                    break
+                start = i + len(marker)
+            if token in survived:
                 break
-            windows.append(body[max(0, i - 320):i + len(marker) + 320])
-            start = i + len(marker)
-    survived = [t for t in expected if any(_unescaped(w, t) for w in windows)]
     return {
-        "payload_marker_reflected": bool(windows),
+        "payload_marker_reflected": marker_seen,
         "survival_tokens_expected": expected,
         "survival_tokens": survived,
         "breakout_survived": bool(survived),

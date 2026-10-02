@@ -101,3 +101,13 @@ def test_encoded_markup_does_not_count_as_live_breakout():
     assert ev["payload_marker_reflected"] is True
     assert ev["breakout_survived"] is False
     assert ev["survival_tokens"] == []
+
+
+def test_json_escaped_js_breakout_is_not_live():
+    marker = "xzjson"
+    payload = f'";window.__X[\'{marker}\']=1;//'
+    encoded_payload = payload.replace('"', '\\"')
+    raw = f'<script>var s = "{encoded_payload}";</script>'
+    ev = _survival_evidence(payload, marker, raw, raw)
+    assert ev["payload_marker_reflected"] is True
+    assert ev["breakout_survived"] is False

