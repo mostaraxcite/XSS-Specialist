@@ -87,7 +87,7 @@ def test_marker_local_survival_detects_breakout_without_full_payload_match():
     ev = _survival_evidence(payload, marker, raw, raw)
     assert ev["payload_marker_reflected"] is True
     assert ev["breakout_survived"] is True
-    assert "<img" in ev["survival_tokens"]
+    assert '"><' in ev["survival_tokens"]
 
 
 def test_encoded_markup_does_not_count_as_live_breakout():
