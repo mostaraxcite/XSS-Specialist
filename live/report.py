@@ -50,19 +50,38 @@ def save_assessment(name, scope, enforcer, crawl_result, candidates, assess_resu
         "\n".join(json.dumps(r) for r in enforcer.request_log) + "\n")
     (out / "scope_blocked.jsonl").write_text(
         "\n".join(json.dumps(b) for b in enforcer.blocked_log) + "\n")
-    # probe log + browser evidence
+
+    # Probe logs intentionally preserve both the legacy exact-signature signal and the newer
+    # marker-local breakout-survival signal. This makes false-negative triage reproducible.
     probe_log, browser_ev = [], []
     for r in assess_result["results"]:
         for ev in [r["marker_ev"]] + r["exec_evs"]:
-            probe_log.append({"finding": r["finding"].finding_id,
-                              "kind": ev.get("probe_kind", "marker"),
-                              "note": ev.get("probe_note", ""), "url": ev.get("requested_url"),
-                              "reflected_html": ev.get("reflected_html"),
-                              "raw_reflected": ev.get("raw_reflected"),
-                              "executed": ev.get("executed"), "blocked": ev.get("blocked")})
-            browser_ev.append({"finding": r["finding"].finding_id, **{k: ev.get(k) for k in
-                              ("requested_url", "final_url", "status", "reflected_html",
-                               "reflected_dom", "raw_reflected", "executed", "console")}})
+            probe_log.append({
+                "finding": r["finding"].finding_id,
+                "kind": ev.get("probe_kind", "marker"),
+                "note": ev.get("probe_note", ""),
+                "url": ev.get("requested_url"),
+                "reflected_html": ev.get("reflected_html"),
+                "reflected_dom": ev.get("reflected_dom"),
+                "raw_reflected": ev.get("raw_reflected"),
+                "payload_marker_reflected": ev.get("payload_marker_reflected"),
+                "breakout_survived": ev.get("breakout_survived"),
+                "survival_tokens_expected": ev.get("survival_tokens_expected", []),
+                "survival_tokens": ev.get("survival_tokens", []),
+                "interactions_performed": ev.get("interactions_performed", []),
+                "executed": ev.get("executed"),
+                "blocked": ev.get("blocked"),
+                "error": ev.get("error"),
+            })
+            browser_ev.append({
+                "finding": r["finding"].finding_id,
+                **{k: ev.get(k) for k in (
+                    "requested_url", "final_url", "status", "reflected_html", "reflected_dom",
+                    "raw_reflected", "payload_marker_reflected", "breakout_survived",
+                    "survival_tokens_expected", "survival_tokens", "interactions_performed",
+                    "executed", "console", "error",
+                )}
+            })
     (out / "probe_log.jsonl").write_text("\n".join(json.dumps(p) for p in probe_log) + "\n")
     (out / "browser_evidence.jsonl").write_text("\n".join(json.dumps(b) for b in browser_ev) + "\n")
     (out / "findings.jsonl").write_text("\n".join(json.dumps(asdict(f)) for f in findings) + "\n")
@@ -75,8 +94,10 @@ def save_assessment(name, scope, enforcer, crawl_result, candidates, assess_resu
         "js_routes_discovered": len(crawl_result.get("js_routes", [])),
         "inputs_discovered": len(candidates),
         "candidates_tested": len(findings),
-        "confirmed": n("CONFIRMED"), "likely": n("LIKELY"),
-        "inconclusive": n("INCONCLUSIVE"), "not_vulnerable": n("NOT_VULNERABLE"),
+        "confirmed": n("CONFIRMED"),
+        "likely": n("LIKELY"),
+        "inconclusive": n("INCONCLUSIVE"),
+        "not_vulnerable": n("NOT_VULNERABLE"),
         "requests_made": enforcer.requests_made,
         "out_of_scope_blocked": sum(not b.get("reason", "").startswith("test_class_not_authorized")
                                     for b in enforcer.blocked_log),
@@ -97,14 +118,21 @@ def save_assessment(name, scope, enforcer, crawl_result, candidates, assess_resu
     for k, v in summary.items():
         md.append(f"- **{k.replace('_',' ')}:** {v}")
     md += ["", "## Findings (CONFIRMED / LIKELY)", ""]
-    ranked = sorted(findings, key=lambda f: {"CONFIRMED": 0, "LIKELY": 1, "INCONCLUSIVE": 2,
-                                             "NOT_VULNERABLE": 3}[f.status])
+    ranked = sorted(findings, key=lambda f: {
+        "CONFIRMED": 0, "LIKELY": 1, "INCONCLUSIVE": 2, "NOT_VULNERABLE": 3
+    }[f.status])
     for f in ranked:
         if f.status in ("CONFIRMED", "LIKELY"):
             md.append(_finding_md(f))
-    md += ["## All candidate outcomes", "",
-           "| finding | status | url | param | context | browser |", "|---|---|---|---|---|---|"]
+    md += [
+        "## All candidate outcomes", "",
+        "| finding | status | url | param | context | browser |",
+        "|---|---|---|---|---|---|",
+    ]
     for f in ranked:
-        md.append(f"| {f.finding_id} | {f.status} | {f.url} | `{f.parameter}` | {f.context} | {f.browser_result} |")
+        md.append(
+            f"| {f.finding_id} | {f.status} | {f.url} | `{f.parameter}` | "
+            f"{f.context} | {f.browser_result} |"
+        )
     (out / "report.md").write_text("\n".join(md) + "\n")
     return {"dir": str(out), "summary": summary}
