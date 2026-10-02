@@ -50,7 +50,8 @@ def execute(candidate: dict, probe: Probe, enforcer: Enforcer, timeout_ms: int =
                           cookies=enforcer.scope.cookies or None,
                           raw_signature=probe.raw_signature,
                           interactions=candidate.get("interactions"),
-                          in_scope=enforcer.scope.in_scope, post_data=post_data)
+                          in_scope=enforcer.scope.in_scope, post_data=post_data,
+                          probe_payload=probe.payload)
     enforcer.note_request(url, final_url=ev.get("final_url") or url, status=ev.get("status"),
                           kind=probe.kind)
     enforcer.blocked_log.extend({**b, "from": url} for b in ev.get("scope_blocked", []))
