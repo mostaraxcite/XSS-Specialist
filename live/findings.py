@@ -4,7 +4,7 @@ Each candidate ends in exactly one state:
   CONFIRMED      — browser oracle observed execution (window.__X[marker] set). Authoritative.
   LIKELY         — strong source/context/sink + reflection evidence, but no execution confirmation.
   INCONCLUSIVE   — reflected but context/oracle ambiguous, or blocked before completion.
-  NOT_VULNERABLE — reflected-and-encoded or not reflected, no execution, no strong path.
+  NOT_VULNERABLE — no reflection/path evidence, or reflection with VERIFIED_SAFE defense evidence.
 
 A finding is NEVER upgraded to CONFIRMED from model confidence. Only the oracle upgrades it.
 Sanitizer identity contributes to NOT_VULNERABLE only when VERIFIED_SAFE; UNKNOWN/near-miss never
@@ -45,8 +45,9 @@ def correlate(candidate: dict, marker_ev: dict, exec_evs: list, sanitizer_verdic
     """Fold the marker probe + execution probes + sanitizer identity into one finding."""
     reflected = bool(marker_ev.get("reflected_html") or marker_ev.get("reflected_dom"))
     executed = any(e.get("executed") for e in exec_evs)
-    # a harmless marker reflecting is NOT evidence of XSS; the dangerous payload must survive UNENCODED
-    raw_live = any(e.get("raw_reflected") for e in exec_evs)
+    # A harmless marker alone is not XSS. A context-breakout token surviving near the unique probe
+    # marker is stronger evidence than exact full-payload matching, but remains advisory (LIKELY).
+    raw_live = any(e.get("raw_reflected") or e.get("breakout_survived") for e in exec_evs)
     blocked = marker_ev.get("blocked") or (bool(exec_evs) and all(e.get("blocked") for e in exec_evs))
     probe_error = bool(marker_ev.get("error")) or any(bool(e.get("error")) for e in exec_evs)
     ctx = candidate.get("context", "unknown")
@@ -64,13 +65,19 @@ def correlate(candidate: dict, marker_ev: dict, exec_evs: list, sanitizer_verdic
         status, conf = LIKELY, 0.6
     elif blocked or probe_error:
         status, conf = INCONCLUSIVE, 0.2
-    elif reflected and not raw_live:
-        # input echoes but dangerous chars are encoded / not present -> not exploitable here
-        status, conf = NOT_VULNERABLE, 0.12
+    elif reflected and san_status == "VERIFIED_SAFE":
+        # A negative verdict after reflection requires positive defense evidence. Merely failing to
+        # execute one bounded payload is not proof that the parameter is safe.
+        status, conf = NOT_VULNERABLE, 0.8
+    elif reflected:
+        status, conf = INCONCLUSIVE, 0.35
     else:
         status, conf = NOT_VULNERABLE, 0.1
 
-    winning = next((e for e in exec_evs if e.get("executed")), marker_ev)
+    winning = next((e for e in exec_evs if e.get("executed")), None)
+    if winning is None:
+        winning = next((e for e in exec_evs
+                        if e.get("breakout_survived") or e.get("raw_reflected")), marker_ev)
     return Finding(
         finding_id=fid, status=status, xss_class=xss_class,
         url=candidate["url"], method=candidate.get("method", "GET"),
@@ -91,7 +98,9 @@ def correlate(candidate: dict, marker_ev: dict, exec_evs: list, sanitizer_verdic
         impact=("Executable script in the page origin: session/DOM access, action-on-behalf."
                 if status == CONFIRMED else
                 "Untrusted input reaches a live context without verified-safe encoding."
-                if status == LIKELY else "No executable path established."),
+                if status == LIKELY else
+                "Reflection observed, but exploitability was not established."
+                if status == INCONCLUSIVE and reflected else "No executable path established."),
         remediation="Contextual output encoding at the sink; use a verified-safe sanitizer "
                     "(exact known API) or a safe DOM API (textContent).",
         evidence_refs=[getattr(sanitizer_verdict, "evidence_id", "")] if getattr(sanitizer_verdict, "evidence_id", "") else [],
