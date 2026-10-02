@@ -52,6 +52,10 @@ def _exec_payloads(marker: str, context: str) -> list[tuple[str, str]]:
         # the marker's single quotes do not corrupt the generated HTML.
         out.append((f"\"><img src=x onerror=\"{hit}\">", "quoted(dq) attr breakout"))
         out.append((f"'><img src=x onerror=\"{hit}\">", "quoted(sq) attr breakout"))
+        # Attribute-only variants catch filters that strip tags but still allow quote breakout.
+        # The executor only performs bounded hover/focus/click on the marker-bearing element.
+        out.append((f"\" onmouseover=\"{hit}\" x=\"", "quoted(dq) attr handler breakout"))
+        out.append((f"' onmouseover=\"{hit}\" x='", "quoted(sq) attr handler breakout"))
     if context in ("html_attr_unquoted",):
         # unquoted attribute: no metachar needed, an event handler alone injects
         out.append((f"{marker} onmouseover={hit} x", "unquoted attr handler"))
