@@ -124,6 +124,46 @@ _INTERACTIONS = {
 }
 _EXECUTED = "m => !!(window.__X && window.__X[m])"
 
+# Context-breakout evidence is intentionally weaker than browser execution. It is used only to
+# distinguish LIKELY/INCONCLUSIVE from NOT_VULNERABLE; it can never create CONFIRMED.
+_BREAKOUT_TOKENS = ('"><', "'><", "<img", "onerror=", "onfocus=", "onmouseover=",
+                    '";', "</script>", "javascript:")
+
+
+def _unescaped(body: str, token: str) -> bool:
+    i = body.find(token)
+    while i >= 0:
+        if i == 0 or body[i - 1] != "\\\\":
+            return True
+        i = body.find(token, i + 1)
+    return False
+
+
+def _survival_evidence(payload: str, marker: str, raw_body: str, dom_txt: str) -> dict:
+    """Measure whether context-breaking syntax survived near this probe's unique marker.
+
+    This deliberately does not require the entire payload/signature to round-trip byte-for-byte:
+    servers and browsers may normalize harmless whitespace/quoting while still leaving the
+    dangerous delimiter live. Evidence is marker-local to avoid matching unrelated page markup.
+    """
+    expected = [t for t in _BREAKOUT_TOKENS if t in (payload or "")]
+    windows = []
+    for body in (raw_body or "", dom_txt or ""):
+        start = 0
+        while marker and True:
+            i = body.find(marker, start)
+            if i < 0:
+                break
+            windows.append(body[max(0, i - 320):i + len(marker) + 320])
+            start = i + len(marker)
+    survived = [t for t in expected if any(_unescaped(w, t) for w in windows)]
+    return {
+        "payload_marker_reflected": bool(windows),
+        "survival_tokens_expected": expected,
+        "survival_tokens": survived,
+        "breakout_survived": bool(survived),
+    }
+
 
 def install_scope_guard(context, in_scope, blocked: list, post: dict | None = None) -> None:
     """Enforce scope INSIDE the browser: requests the browser issues (navigations, subresources,
@@ -186,7 +226,7 @@ def run_probe_on_url(url: str, marker: str, delivery: str = "query", param: str 
                      timeout_ms: int = 12000, extra_headers: dict | None = None,
                      cookies: list | None = None, raw_signature: str = "",
                      interactions: list | None = None, in_scope=None,
-                     post_data: dict | None = None) -> dict:
+                     post_data: dict | None = None, probe_payload: str = "") -> dict:
     """AUTHORITATIVE live execution check. Navigates a real (in-scope) URL with the probe already
     embedded in `url` (or, for `post_data`, POSTs it to `url`), installs a per-marker sentinel
     (window.__X), and reports what the BROWSER actually did: reflection in HTML source, reflection
@@ -204,7 +244,9 @@ def run_probe_on_url(url: str, marker: str, delivery: str = "query", param: str 
 
     result = {"requested_url": url, "final_url": None, "status": None,
               "reflected_html": False, "reflected_dom": False, "executed": False,
-              "raw_reflected": False, "console": [], "marker": marker,
+              "raw_reflected": False, "breakout_survived": False,
+              "survival_tokens": [], "survival_tokens_expected": [],
+              "payload_marker_reflected": False, "console": [], "marker": marker,
               "interactions_performed": [], "scope_blocked": []}
     if post_data is not None:
         result["method"] = "POST"
