@@ -88,3 +88,16 @@ def test_marker_local_survival_detects_breakout_without_full_payload_match():
     assert ev["payload_marker_reflected"] is True
     assert ev["breakout_survived"] is True
     assert "<img" in ev["survival_tokens"]
+
+
+def test_encoded_markup_does_not_count_as_live_breakout():
+    marker = "xzsafe"
+    payload = f'<span>{marker}</span><img src=x onerror="window.__X[\'{marker}\']=1">'
+    encoded = (
+        f'<div>&lt;span&gt;{marker}&lt;/span&gt;'
+        f'&lt;img src=x onerror="window.__X[\'{marker}\']=1"&gt;</div>'
+    )
+    ev = _survival_evidence(payload, marker, encoded, encoded)
+    assert ev["payload_marker_reflected"] is True
+    assert ev["breakout_survived"] is False
+    assert ev["survival_tokens"] == []

@@ -126,8 +126,28 @@ _EXECUTED = "m => !!(window.__X && window.__X[m])"
 
 # Context-breakout evidence is intentionally weaker than browser execution. It is used only to
 # distinguish LIKELY/INCONCLUSIVE from NOT_VULNERABLE; it can never create CONFIRMED.
-_BREAKOUT_TOKENS = ('"><', "'><", "<img", "onerror=", "onfocus=", "onmouseover=",
-                    '";', "</script>", "javascript:")
+_BREAKOUT_TOKENS = ('"><', "'><", '" onmouseover=', "' onmouseover=",
+                    '";', "</script>", "javascript:", "<img", " onmouseover=")
+
+
+def _critical_tokens(payload: str) -> list[str]:
+    """Return only syntax whose survival is sufficient to keep this probe's breakout shape live."""
+    payload = payload or ""
+    ordered = (
+        '"><',
+        "'><",
+        '" onmouseover=',
+        "' onmouseover=",
+        "</script>",
+        '";',
+        "javascript:",
+        "<img",
+        " onmouseover=",
+    )
+    for token in ordered:
+        if token in payload:
+            return [token]
+    return []
 
 
 def _unescaped(body: str, token: str) -> bool:
@@ -151,7 +171,7 @@ def _survival_evidence(payload: str, marker: str, raw_body: str, dom_txt: str) -
     servers and browsers may normalize harmless whitespace/quoting while still leaving the
     dangerous delimiter live. Evidence is marker-local to avoid matching unrelated page markup.
     """
-    expected = [t for t in _BREAKOUT_TOKENS if t in (payload or "")]
+    expected = _critical_tokens(payload)
     windows = []
     for body in (raw_body or "", dom_txt or ""):
         start = 0
