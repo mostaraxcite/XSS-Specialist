@@ -2,6 +2,7 @@ from types import SimpleNamespace
 
 from live.crawler import map_inputs
 from live.findings import INCONCLUSIVE, LIKELY, NOT_VULNERABLE, correlate
+from verification.browser_oracle import _survival_evidence
 
 
 def _candidate(context="html_attr"):
@@ -77,3 +78,13 @@ def test_hash_candidates_require_dom_source_evidence():
     hashes = [c for c in cands if c["delivery"] == "hash"]
     assert len(hashes) == 1
     assert hashes[0]["url"] == "http://example.test/b"
+
+
+def test_marker_local_survival_detects_breakout_without_full_payload_match():
+    marker = "xzprobe"
+    payload = f'"><img src=x onerror="window.__X[\'{marker}\']=1">'
+    raw = f'<input value="{payload}">'
+    ev = _survival_evidence(payload, marker, raw, raw)
+    assert ev["payload_marker_reflected"] is True
+    assert ev["breakout_survived"] is True
+    assert "<img" in ev["survival_tokens"]

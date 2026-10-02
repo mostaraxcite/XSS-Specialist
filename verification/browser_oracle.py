@@ -133,7 +133,12 @@ _BREAKOUT_TOKENS = ('"><', "'><", "<img", "onerror=", "onfocus=", "onmouseover="
 def _unescaped(body: str, token: str) -> bool:
     i = body.find(token)
     while i >= 0:
-        if i == 0 or body[i - 1] != "\\\\":
+        backslashes = 0
+        j = i - 1
+        while j >= 0 and body[j] == "\\":
+            backslashes += 1
+            j -= 1
+        if backslashes % 2 == 0:
             return True
         i = body.find(token, i + 1)
     return False
@@ -306,17 +311,15 @@ def run_probe_on_url(url: str, marker: str, delivery: str = "query", param: str 
                                 break
                         except Exception:
                             pass
-                # dangerous signature must survive UNENCODED (and not backslash-escaped) in the raw
-                # body, or be present in the live DOM, to be considered live.
+                # Keep the exact-signature signal for compatibility, but also record marker-local
+                # context-breakout survival. This avoids false negatives when harmless normalization
+                # changes part of a payload while the dangerous delimiter remains live.
                 if raw_signature:
-                    def _unescaped(body, sig):
-                        i = body.find(sig)
-                        while i >= 0:
-                            if i == 0 or body[i - 1] != "\\":
-                                return True
-                            i = body.find(sig, i + 1)
-                        return False
-                    result["raw_reflected"] = _unescaped(raw_body, raw_signature) or _unescaped(dom_txt, raw_signature)
+                    result["raw_reflected"] = (
+                        _unescaped(raw_body, raw_signature)
+                        or _unescaped(dom_txt, raw_signature)
+                    )
+                result.update(_survival_evidence(probe_payload, marker, raw_body, dom_txt))
                 # surrounding source window around the marker (raw body preferred), for context class.
                 src_for_ctx = raw_body if marker in raw_body else (dom_txt if marker in dom_txt else "")
                 if src_for_ctx:
